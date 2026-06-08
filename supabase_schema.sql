@@ -123,7 +123,9 @@ alter table public.admin_logs enable row level security;
 alter table public.admin_logs force row level security;
 
 -- Grant base table-level privileges for RLS policies
+grant select on public.admin_logs to anon, authenticated;
 grant all on public.admin_logs to authenticated;
+
 
 
 -- Only authenticated administrators can read/write logs (idempotent with DROP POLICY IF EXISTS)
