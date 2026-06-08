@@ -1,8 +1,9 @@
 -- Schema configuration for Kauan Lens Portfolio
 -- Conforming to Supabase & Postgres Best Practices
+-- Fully Idempotent Script
 
 -- 1. Create Albums Table
-create table public.albums (
+create table if not exists public.albums (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   slug text unique not null,
@@ -18,25 +19,26 @@ create table public.albums (
   created_at timestamptz not null default now()
 );
 
--- Enable RLS on albums
+-- Enable RLS on albums (safe to run multiple times)
 alter table public.albums enable row level security;
 alter table public.albums force row level security;
 
--- Create policies for albums
--- Anonymous users can only view published and non-deleted albums
+-- Create policies for albums (idempotent with DROP POLICY IF EXISTS)
+drop policy if exists "Allow public read-only access to published albums" on public.albums;
 create policy "Allow public read-only access to published albums"
   on public.albums
   for select
   to anon, authenticated
   using (status = 'published' and deleted_at is null);
 
--- Authenticated admins can do anything (including view draft/deleted albums)
+drop policy if exists "Allow authenticated users to select all albums" on public.albums;
 create policy "Allow authenticated users to select all albums"
   on public.albums
   for select
   to authenticated
   using (true);
 
+drop policy if exists "Allow authenticated users to manage albums" on public.albums;
 create policy "Allow authenticated users to manage albums"
   on public.albums
   for all
@@ -46,7 +48,7 @@ create policy "Allow authenticated users to manage albums"
 
 
 -- 2. Create Photos Table
-create table public.photos (
+create table if not exists public.photos (
   id uuid primary key default gen_random_uuid(),
   album_id uuid not null references public.albums(id) on delete cascade,
   src text not null,          -- Web-optimized URL
@@ -62,14 +64,14 @@ create table public.photos (
 );
 
 -- Index foreign key to optimize JOINs and CASCADE operations (High Impact rule)
-create index photos_album_id_idx on public.photos (album_id);
+create index if not exists photos_album_id_idx on public.photos (album_id);
 
 -- Enable RLS on photos
 alter table public.photos enable row level security;
 alter table public.photos force row level security;
 
--- Create policies for photos
--- Anonymous users can only view non-deleted photos that belong to published/active albums
+-- Create policies for photos (idempotent with DROP POLICY IF EXISTS)
+drop policy if exists "Allow public read-only access to active photos" on public.photos;
 create policy "Allow public read-only access to active photos"
   on public.photos
   for select
@@ -82,13 +84,14 @@ create policy "Allow public read-only access to active photos"
     )
   );
 
--- Authenticated admins can do anything
+drop policy if exists "Allow authenticated users to select all photos" on public.photos;
 create policy "Allow authenticated users to select all photos"
   on public.photos
   for select
   to authenticated
   using (true);
 
+drop policy if exists "Allow authenticated users to manage photos" on public.photos;
 create policy "Allow authenticated users to manage photos"
   on public.photos
   for all
@@ -98,7 +101,7 @@ create policy "Allow authenticated users to manage photos"
 
 
 -- 3. Create Admin Logs Table
-create table public.admin_logs (
+create table if not exists public.admin_logs (
   id uuid primary key default gen_random_uuid(),
   action text not null,
   details text,
@@ -109,7 +112,8 @@ create table public.admin_logs (
 alter table public.admin_logs enable row level security;
 alter table public.admin_logs force row level security;
 
--- Only authenticated administrators can read/write logs
+-- Only authenticated administrators can read/write logs (idempotent with DROP POLICY IF EXISTS)
+drop policy if exists "Allow authenticated users to manage logs" on public.admin_logs;
 create policy "Allow authenticated users to manage logs"
   on public.admin_logs
   for all
@@ -129,22 +133,26 @@ values (
 )
 on conflict (id) do nothing;
 
--- Enable RLS on storage.objects
-alter table storage.objects enable row level security;
+-- REMOVED: alter table storage.objects enable row level security;
+-- This line is removed to avoid: "ERROR: 42501: must be owner of table objects".
+-- RLS is enabled by default on storage.objects in Supabase.
 
--- Storage policies for the public 'photos' bucket
+-- Storage policies for the public 'photos' bucket (idempotent with DROP POLICY IF EXISTS)
+drop policy if exists "Allow public read-only access to photos storage" on storage.objects;
 create policy "Allow public read-only access to photos storage"
   on storage.objects
   for select
   to anon, authenticated
   using (bucket_id = 'photos');
 
+drop policy if exists "Allow authenticated users to upload photos" on storage.objects;
 create policy "Allow authenticated users to upload photos"
   on storage.objects
   for insert
   to authenticated
   with check (bucket_id = 'photos');
 
+drop policy if exists "Allow authenticated users to update/delete photos" on storage.objects;
 create policy "Allow authenticated users to update/delete photos"
   on storage.objects
   for all
