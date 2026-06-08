@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="description"
+    content="Kauan (lens.by.zy) | Portfólio pessoal e registros fotográficos autorais em Luís Eduardo Magalhães, Bahia.">
+  
+  <!-- SEO Open Graph Metadados -->
+  <meta property="og:title" content="Kauan (lens.by.zy) | Portfólio Fotográfico">
+  <meta property="og:description" content="Registros fotográficos autorais e momentos reais em Luís Eduardo Magalhães, Bahia.">
+  <meta property="og:image" content="/assets/perfil.jpg">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Cards Metadados -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kauan (lens.by.zy) | Portfólio Fotográfico">
+  <meta name="twitter:description" content="Registros fotográficos autorais e momentos reais em Luís Eduardo Magalhães, Bahia.">
+  <meta name="twitter:image" content="/assets/perfil.jpg">
+
+  <title>Kauan (lens.by.zy) | Portfólio Fotográfico</title>
+
+  <!-- Fontes Premium -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+
+  <!-- NAVEGAÇÃO -->
+  <nav id="nav">
+    <a href="/" class="nav-brand" id="logoLink" aria-label="Voltar ao início">Kauan<span>.</span></a>
+
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#galeria">Galeria</a></li>
+      <li><a href="#area-kauan">Área Kauan</a></li>
+    </ul>
+
+    <a href="https://instagram.com/lens.by.zy" target="_blank" rel="noopener" class="nav-ig"
+      aria-label="Instagram de Kauan">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="5" />
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+      </svg>
+      @lens.by.zy
+    </a>
+
+    <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobMenu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Menu Responsivo Mobile -->
+  <div class="mob-menu" id="mobMenu" role="dialog" aria-modal="true" aria-label="Menu de navegação">
+    <a href="#sobre" class="mob-link">Sobre</a>
+    <a href="#galeria" class="mob-link">Galeria</a>
+    <a href="#area-kauan" class="mob-link">Área Kauan</a>
+    <a href="https://instagram.com/lens.by.zy" target="_blank" rel="noopener" class="mob-ig-link">Instagram</a>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section id="hero">
+    <div class="hero-image" id="heroImage">
+      <img src="" alt="" id="heroImg">
+    </div>
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+
+    <!-- Viewfinder de Câmera -->
+    <div class="hero-viewfinder" id="viewfinder" aria-hidden="true">
+      <div class="vf-corner vf-corner--tl"></div>
+      <div class="vf-corner vf-corner--tr"></div>
+      <div class="vf-corner vf-corner--bl"></div>
+      <div class="vf-corner vf-corner--br"></div>
+      <div class="vf-focus"></div>
+      <div class="vf-grid"></div>
+    </div>
+
+    <!-- Metadados técnicos de câmera -->
+    <div class="hero-meta-cam" id="heroMetaCam" aria-hidden="true">
+      iQOO Neo 10<br>
+      f/1.8 · 1/250s · ISO 200<br>
+      LEM, BA · -12.09, -45.80
+    </div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">lens.by.zy — LEM, Bahia</p>
+      <h1 class="hero-name">Kauan<em>Fotografia de celular no interior do Cerrado</em></h1>
+      <p class="hero-tag">Registro visual honesto de luzes, sombras e momentos que encontro na minha frente. Sem
+        estúdio. Sem edição pesada. Só o que a câmera vê.</p>
+
+      <div class="hero-actions">
+        <a href="#galeria" class="btn btn-gold">Ver Galeria</a>
+        <a href="#sobre" class="btn btn-outline">Sobre Mim</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll" aria-hidden="true">
+      <div class="scroll-bar"></div>
+      <span class="scroll-lbl">Scroll</span>
+    </div>
+  </section>
+
+  <!-- SEÇÃO SOBRE -->
+  <section id="sobre">
+    <div class="sobre-grid">
+      <div class="sobre-foto-container rev">
+        <div class="sobre-foto" id="sobreFoto">
+          <img src="" alt="Kauan, fotógrafo de LEM, Bahia" id="perfilImg">
+          <div class="sobre-foto-placeholder" id="perfilPlaceholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+              stroke-linejoin="round" class="aperture-icon">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="14.31" y1="8" x2="20.05" y2="17.94"></line>
+              <line x1="9.69" y1="8" x2="21.17" y2="8"></line>
+              <line x1="7.38" y1="12" x2="13.12" y2="2.06"></line>
+              <line x1="9.69" y1="16" x2="3.95" y2="6.06"></line>
+              <line x1="14.31" y1="16" x2="2.83" y2="16"></line>
+              <line x1="16.62" y1="12" x2="10.88" y2="21.94"></line>
+            </svg>
+            <span>Sua foto aqui</span>
+          </div>
+          <div class="sobre-foto-label">Kauan · LEM, BA</div>
+        </div>
+      </div>
+
+      <div class="rev rev-d2">
+        <span class="sec-label">Sobre</span>
+        <h2 class="sec-title">Kauan<br><em>de LEM, Bahia</em></h2>
+        <div class="gold-line"></div>
+
+        <p class="sobre-bio">
+          Eu comecei a fotografar por curiosidade — queria entender por que certas luzes do final de tarde no Cerrado me
+          faziam parar no meio da rua. Não tenho estúdio, não tenho equipamento caro. Uso um <strong>iQOO Neo
+            10</strong> e registro o que aparece na minha frente quando a luz está certa.
+          <br><br>
+          Este site é onde organizo o que considero bom o suficiente para mostrar. Moro em <strong>Luís Eduardo
+            Magalhães</strong>, no oeste da Bahia. Cada foto aqui é um momento real que eu decidi guardar.
+        </p>
+
+        <div class="sobre-tags">
+          <span class="tag">iQOO Neo 10</span>
+          <span class="tag">LEM, Bahia</span>
+          <span class="tag">Celular</span>
+          <span class="tag">Luz natural</span>
+        </div>
+
+        <div class="sobre-social">
+          <a href="https://instagram.com/lens.by.zy" target="_blank" rel="noopener" class="social-link"
+            aria-label="Visite o Instagram @lens.by.zy">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+            @lens.by.zy
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO GALERIA -->
+  <section id="galeria">
+    <div class="galeria-header rev">
+      <div>
+        <span class="sec-label">Galeria</span>
+        <h2 class="sec-title">Registros</h2>
+        <p class="sec-sub">Cada álbum é um conjunto de fotos de um mesmo dia, lugar ou situação.</p>
+      </div>
+      <div class="admin-only" id="addAlbumBtn">
+        <a href="#area-kauan" class="mini-btn">Adicionar Álbum</a>
+      </div>
+    </div>
+
+    <!-- Guia administrativo de sessão -->
+    <div class="admin-only owner-gate rev rev-d1" id="ownerGate">
+      <p class="owner-gate-text">
+        <strong>Modo de Edição Ativo</strong>
+        Você pode criar, editar e excluir álbuns/fotos diretamente nesta tela. Todas as alterações são salvas na nuvem.
+      </p>
+      <div style="display: flex; gap: 1rem;">
+        <a href="#area-kauan" class="mini-btn gold">Criar Álbum</a>
+        <button class="mini-btn" id="logoutBtn">Sair do Painel</button>
+      </div>
+    </div>
+
+    <!-- Interface dos Álbuns -->
+    <div class="album-shell rev rev-d2">
+      <div class="album-tabs" id="albumTabs" role="tablist" aria-label="Álbuns de fotos disponíveis"></div>
+      <div class="album-view" id="albumView"></div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO ÁREA KAUAN (ADMINISTRAÇÃO) -->
+  <section id="area-kauan">
+    <div class="add-grid">
+      <div class="rev">
+        <span class="sec-label">Espaço do Autor</span>
+        <h2 class="sec-title">Painel de<br><em>Edição</em></h2>
+        <div class="gold-line"></div>
+        <p class="sec-sub">Crie novos álbuns, adicione imagens em lotes de forma otimizada e gerencie seu portfólio.</p>
+
+        <div class="add-preview">
+          <div class="add-preview-title">Status do Sistema</div>
+          <div class="preview-item">
+            <div class="preview-dot"></div>
+            <div class="preview-text">
+              Autenticação Segura
+              <span>Sessões administradas com Supabase Auth e criptografia SSL</span>
+            </div>
+          </div>
+          <div class="preview-item">
+            <div class="preview-dot"></div>
+            <div class="preview-text">
+              Compressão em 3 Níveis
+              <span>Miniaturas (thumbnails), versões web leves e alta resolução original geradas no navegador</span>
+            </div>
+          </div>
+          <div class="preview-item">
+            <div class="preview-dot"></div>
+            <div class="preview-text">
+              Preservação Física
+              <span>Exclusões seguras com Lixeira local e backups periódicos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rev rev-d2">
+        <!-- Login do Administrador -->
+        <div class="owner-panel" id="ownerLocked">
+          <span class="sec-label">Acesso Restrito</span>
+          <p class="sec-sub" style="margin-bottom: 1.5rem;">Forneça os dados da conta administrativa para realizar alterações.</p>
+          <div class="form-group">
+            <label class="form-label" for="ownerEmail">Email do Administrador</label>
+            <input type="email" class="form-input" placeholder="Ex: kauan@exemplo.com" id="ownerEmail">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ownerPass">Senha de Acesso</label>
+            <input type="password" class="form-input" placeholder="Sua senha" id="ownerPass">
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="mini-btn gold" id="loginBtn">Entrar no Painel</button>
+          </div>
+          <p class="owner-note" style="margin-top: 1.2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+            * Nota: O login autentica sua sessão no Supabase Auth. Sem login ativo, o banco rejeitará alterações automáticas por regras RLS.
+          </p>
+        </div>
+
+        <!-- Ferramentas Administrativas -->
+        <div class="owner-panel hidden" id="ownerTools">
+          
+          <!-- Menu do Dashboard de Admin -->
+          <div class="admin-dash-tabs">
+            <button class="mini-btn gold" id="tabNewAlbum">Novo Álbum</button>
+            <button class="mini-btn" id="tabTrash">Lixeira</button>
+            <button class="mini-btn" id="tabLogs">Logs</button>
+            <button class="mini-btn" id="tabBackup">Backup</button>
+          </div>
+
+          <!-- SUB-TELA: Criar/Editar Álbum -->
+          <div class="admin-tab-content" id="contentAlbumForm">
+            <h3 class="admin-sub-title" id="formAlbumTitle">Criar Novo Álbum</h3>
+            <input type="hidden" id="editAlbumId" value="">
+            
+            <div class="form-group">
+              <label class="form-label" for="evTitle">Título do Álbum</label>
+              <input type="text" class="form-input" placeholder="Ex: Pôr do sol no Cerrado, Detalhes Urbanos..." id="evTitle">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="evCat">Categoria</label>
+                <select class="form-input" id="evCat">
+                  <option value="natureza">Natureza</option>
+                  <option value="noturna">Noturna</option>
+                  <option value="urbana">Urbana</option>
+                  <option value="pessoas">Pessoas</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="evDate">Data do Registro</label>
+                <input type="date" class="form-input" id="evDate" style="color-scheme:dark">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="evLocal">Localidade</label>
+              <input type="text" class="form-input" placeholder="Ex: LEM, Bahia" id="evLocal">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="evNota">Observações Técnicas / Notas (opcional)</label>
+              <textarea class="form-input" placeholder="Luz ambiente, detalhes do enquadramento, lente ou sentimento..." id="evNota"></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="evStatus">Status de Publicação</label>
+                <select class="form-input" id="evStatus">
+                  <option value="draft">Rascunho (Draft)</option>
+                  <option value="published">Publicado (Published)</option>
+                </select>
+              </div>
+              <div class="form-group" style="display:flex; align-items:center; height:100%; padding-top:2.2rem;">
+                <label class="form-label" style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-weight:normal;">
+                  <input type="checkbox" id="evFeatured" style="accent-color:var(--gold); width:16px; height:16px;">
+                  Destacar este álbum
+                </label>
+              </div>
+            </div>
+
+            <!-- Área de Upload de Imagens -->
+            <div class="upload-area" id="uploadArea">
+              <input type="file" accept="image/*" multiple id="albumFiles" aria-label="Selecione fotos para o álbum">
+              <div class="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="16 16 12 12 8 16" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                  <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                </svg>
+              </div>
+              <p class="upload-title">Fotos selecionadas</p>
+              <p class="upload-sub">Selecione arquivos JPG, PNG ou WEBP em lote</p>
+              <span class="upload-btn-lbl">Anexar Imagens</span>
+            </div>
+
+            <!-- Lista de Uploads (com previews, nomes e progresso) -->
+            <div class="upload-queue-container hidden" id="uploadQueueContainer">
+              <h4 class="form-label" style="margin-top:1.5rem;">Arquivos na Fila</h4>
+              <div class="upload-queue-list" id="uploadQueueList"></div>
+            </div>
+
+            <div class="owner-actions">
+              <button class="btn btn-gold" style="width:100%; text-align:center;" id="saveAlbumBtn">Publicar Álbum</button>
+              <button class="mini-btn" id="clearFormBtn" type="button">Cancelar</button>
+            </div>
+
+            <div id="successMsg" style="display:none;">
+              Processando operação...
+            </div>
+          </div>
+
+          <!-- SUB-TELA: Lixeira (Soft Delete) -->
+          <div class="admin-tab-content hidden" id="contentTrash">
+            <h3 class="admin-sub-title">Lixeira (Itens Excluídos)</h3>
+            <p class="sec-sub" style="font-size:0.75rem; margin-bottom:1.5rem;">Álbuns e fotos abaixo foram soft-deletados. Eles não aparecem na galeria pública e podem ser restaurados ou expurgados definitivamente.</p>
+            <div class="trash-list" id="trashList">
+              <p class="text-dim" style="font-size:0.8rem;">A lixeira está vazia.</p>
+            </div>
+          </div>
+
+          <!-- SUB-TELA: Logs -->
+          <div class="admin-tab-content hidden" id="contentLogs">
+            <h3 class="admin-sub-title">Logs de Auditoria</h3>
+            <p class="sec-sub" style="font-size:0.75rem; margin-bottom:1.5rem;">Histórico de ações realizadas por usuários autenticados no sistema.</p>
+            <div class="logs-list-wrapper">
+              <div class="logs-list" id="logsList"></div>
+            </div>
+          </div>
+
+          <!-- SUB-TELA: Backup -->
+          <div class="admin-tab-content hidden" id="contentBackup">
+            <h3 class="admin-sub-title">Cópia de Segurança</h3>
+            <p class="sec-sub" style="font-size:0.75rem; margin-bottom:1.5rem;">
+              Exporte todos os dados dos álbuns e fotos cadastrados em um arquivo estruturado JSON para armazenamento externo.
+            </p>
+            <button class="btn btn-gold" id="exportBackupBtn">Exportar Dados (JSON)</button>
+            <div class="pass-hint" style="margin-top: 1.5rem;">
+              <strong>Observação:</strong> Este backup contém apenas as tabelas relacionais do banco. As mídias originais permanecem seguras no Supabase Storage.
+            </div>
+          </div>
+
+          <!-- Informações Rápidas do Dashboard de Produção -->
+          <div class="admin-dash-summary" id="adminDashSummary">
+            <div class="dash-metrics-grid">
+              <div class="metric-card">
+                <span class="metric-val" id="metricAlbums">0</span>
+                <span class="metric-lbl">Álbuns Ativos</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-val" id="metricPhotos">0</span>
+                <span class="metric-lbl">Fotos Salvas</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-val" id="metricTrash">0</span>
+                <span class="metric-lbl">Na Lixeira</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Kauan<span>. lens.by.zy</span></div>
+        <p class="footer-copy" style="margin-top: 0.5rem;">© 2026 — Luís Eduardo Magalhães, Bahia</p>
+      </div>
+      <p class="footer-copy">Registros Reais sem Filtros Comerciais</p>
+      <a href="https://instagram.com/lens.by.zy" target="_blank" rel="noopener" class="footer-ig"
+        aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" />
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+        </svg>
+        @lens.by.zy
+      </a>
+    </div>
+  </footer>
+
+  <!-- MODAL LIGHTBOX -->
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Visualização de imagem cheia">
+    <button class="lb-close" id="lbClose" aria-label="Fechar visualização">✕</button>
+
+    <div class="lb-img-wrap" id="lbImgWrap">
+      <div class="lb-placeholder" id="lbPlaceholder"></div>
+    </div>
+
+    <div class="lb-info">
+      <h3 class="lb-title" id="lbTitle">Título do Registro</h3>
+      <p class="lb-meta" id="lbMeta">Informações do álbum e câmera</p>
+
+      <div class="lb-acts">
+        <button class="lb-btn lb-btn-fav" id="lbFav">♡ Favoritar</button>
+        <button class="lb-btn" id="lbCloseBtn">Fechar</button>
+      </div>
+    </div>
+
+    <div class="lb-nav">
+      <button id="lbPrevBtn" aria-label="Imagem anterior">←</button>
+      <button id="lbNextBtn" aria-label="Próxima imagem">→</button>
+    </div>
+  </div>
+
+  <!-- Banner Flutuante Offline -->
+  <div class="offline-banner" id="offlineBanner" style="display:none;" aria-hidden="true">
+    Você está navegando em modo offline. Algumas operações podem estar indisponíveis.
+  </div>
+
+</body>
+
+</html>

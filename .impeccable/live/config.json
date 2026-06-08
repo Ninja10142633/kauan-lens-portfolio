@@ -1,0 +1,6 @@
+{
+  "files": ["kauan_lens_portfolio.html"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

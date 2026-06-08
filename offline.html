@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sem Conexão | Kauan (lens.by.zy)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,500&family=DM+Serif+Display:ital@0;1&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --gold: #d4b27a;
+      --gold-hover: #e6c896;
+      --text: #eae7e1;
+      --text-muted: #a09d95;
+      --border: rgba(255, 255, 255, 0.05);
+      --font-serif: 'DM Serif Display', serif;
+      --font-sans: 'DM Sans', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* Brackets do Viewfinder em marca d'água no fundo */
+    .vf-watermark {
+      position: absolute;
+      inset: 3rem;
+      pointer-events: none;
+      opacity: 0.06;
+    }
+
+    .corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+    }
+
+    .corner::before,
+    .corner::after {
+      content: '';
+      position: absolute;
+      background: var(--gold);
+    }
+
+    .tl { top: 0; left: 0; }
+    .tl::before { width: 1px; height: 100%; top: 0; left: 0; }
+    .tl::after { width: 100%; height: 1px; top: 0; left: 0; }
+
+    .tr { top: 0; right: 0; }
+    .tr::before { width: 1px; height: 100%; top: 0; right: 0; }
+    .tr::after { width: 100%; height: 1px; top: 0; right: 0; }
+
+    .bl { bottom: 0; left: 0; }
+    .bl::before { width: 1px; height: 100%; bottom: 0; left: 0; }
+    .bl::after { width: 100%; height: 1px; bottom: 0; left: 0; }
+
+    .br { bottom: 0; right: 0; }
+    .br::before { width: 1px; height: 100%; bottom: 0; right: 0; }
+    .br::after { width: 100%; height: 1px; bottom: 0; right: 0; }
+
+    .center-focus {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+    }
+
+    /* Conteúdo Principal */
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 500px;
+      padding: 2rem;
+    }
+
+    .error-code {
+      font-family: var(--font-serif);
+      font-size: 5rem;
+      line-height: 1;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      padding: 0.9rem 2.2rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: all 0.25s ease;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text);
+      border-radius: 2px;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    .btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      letter-spacing: 0.28em;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="vf-watermark">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+    <div class="center-focus"></div>
+  </div>
+
+  <div class="container">
+    <div class="error-code">Offline</div>
+    <h1>Sem Conexão à Rede</h1>
+    <p>A sincronização com a nuvem foi interrompida. Verifique sua conexão com a internet para carregar os registros.</p>
+    <button onclick="window.location.reload()" class="btn">Tentar Novamente</button>
+  </div>
+</body>
+
+</html>

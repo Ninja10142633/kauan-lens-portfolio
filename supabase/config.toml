@@ -1,0 +1,32 @@
+# Supabase CLI configuration file for Kauan Lens Portfolio
+
+[project]
+id = "kauan-lens-portfolio"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+
+[db.pooler]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+
+[storage]
+enabled = true
+file_size_limit = "50MB"
+
+[analytics]
+enabled = false
