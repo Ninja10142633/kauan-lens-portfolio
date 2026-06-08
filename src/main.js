@@ -1,6 +1,7 @@
 import './style.css';
 import { initGallery, carregarAlbums, loadSharedAlbum } from './gallery';
 import { initAdmin } from './admin';
+import { testSupabaseConnection } from './supabase';
 
 /**
  * Roteador de rotas limpas do lado do cliente (SPA History Router)
@@ -103,6 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Executa Roteamento e Rede
   router();
   updateNetworkStatus();
+
+  // Executa testes de conexão com Supabase no console
+  testSupabaseConnection();
 
   // Revelação de seções suave (Intersection Observer)
   const revElements = document.querySelectorAll('.rev');

@@ -23,6 +23,11 @@ create table if not exists public.albums (
 alter table public.albums enable row level security;
 alter table public.albums force row level security;
 
+-- Grant base table-level privileges for RLS policies
+grant select on public.albums to anon, authenticated;
+grant all on public.albums to authenticated;
+
+
 -- Create policies for albums (idempotent with DROP POLICY IF EXISTS)
 drop policy if exists "Allow public read-only access to published albums" on public.albums;
 create policy "Allow public read-only access to published albums"
@@ -70,6 +75,11 @@ create index if not exists photos_album_id_idx on public.photos (album_id);
 alter table public.photos enable row level security;
 alter table public.photos force row level security;
 
+-- Grant base table-level privileges for RLS policies
+grant select on public.photos to anon, authenticated;
+grant all on public.photos to authenticated;
+
+
 -- Create policies for photos (idempotent with DROP POLICY IF EXISTS)
 drop policy if exists "Allow public read-only access to active photos" on public.photos;
 create policy "Allow public read-only access to active photos"
@@ -111,6 +121,10 @@ create table if not exists public.admin_logs (
 -- Enable RLS on admin_logs
 alter table public.admin_logs enable row level security;
 alter table public.admin_logs force row level security;
+
+-- Grant base table-level privileges for RLS policies
+grant all on public.admin_logs to authenticated;
+
 
 -- Only authenticated administrators can read/write logs (idempotent with DROP POLICY IF EXISTS)
 drop policy if exists "Allow authenticated users to manage logs" on public.admin_logs;
