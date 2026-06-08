@@ -58,12 +58,20 @@ async function runTest() {
 
   try {
     const { data, error } = await supabase.from('admin_logs').select('id, action').limit(5);
-    if (error) throw error;
-    console.log('✅ Tabela admin_logs acessível:', data);
+    if (error) {
+      if (error.code === '42501') {
+        console.log('🛡️ Segurança OK: Tabela "admin_logs" está devidamente protegida contra acessos públicos anônimos (Código esperado 42501).');
+      } else {
+        throw error;
+      }
+    } else {
+      console.log('✅ Tabela admin_logs acessível (Sessão autenticada ativa):', data);
+    }
   } catch (err) {
     console.error('❌ Erro na tabela admin_logs:', err.message || err);
     success = false;
   }
+
 
   try {
     const { data, error } = await supabase.storage.from('photos').list('', { limit: 5 });

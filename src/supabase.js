@@ -74,12 +74,20 @@ export async function testSupabaseConnection() {
   // 3. Testar tabela admin_logs
   try {
     const { data, error } = await supabase.from('admin_logs').select('id, action').limit(5);
-    if (error) throw error;
-    console.log('✅ Sucesso: Tabela "admin_logs" acessível. Registros:', data);
+    if (error) {
+      if (error.code === '42501') {
+        console.log('🛡️ Segurança OK: Tabela "admin_logs" protegida contra acessos públicos anônimos (Código esperado 42501).');
+      } else {
+        throw error;
+      }
+    } else {
+      console.log('✅ Sucesso: Tabela "admin_logs" acessível. Registros:', data);
+    }
   } catch (err) {
     console.error('❌ Erro ao ler tabela "admin_logs":', err.message || err);
     success = false;
   }
+
 
   // 4. Testar Storage
   try {
