@@ -1,6 +1,6 @@
 import { supabase, signIn, signOut, getSession } from './supabase';
 import { generateImageTiers, slugify, escapeHtml, formatDate } from './utils';
-import { carregarAlbums, albums } from './gallery';
+import { carregarAlbums, albums, isRawFilename } from './gallery';
 
 // Fila local de uploads
 let pendingPhotos = [];
@@ -473,7 +473,7 @@ async function carregarLixeira() {
           <div style="display:flex; gap:1rem; align-items:center;">
             <img src="${photo.thumbnail_src || photo.src}" style="width: 40px; height: 40px; object-fit:cover; border-radius:2px;" />
             <div>
-              <span class="trash-title" style="font-weight:500;">${escapeHtml(photo.name || 'Foto sem nome')}</span>
+              <span class="trash-title" style="font-weight:500;">${escapeHtml(isRawFilename(photo.name) ? (photo.albums?.title || 'Foto sem nome') : photo.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " "))}</span>
               <p class="trash-meta" style="margin:0.2rem 0 0; font-size:0.7rem;">
                 Álbum: ${escapeHtml(photo.albums ? photo.albums.title : 'Desconhecido')} · Deletada em: ${escapeHtml(new Date(photo.deleted_at).toLocaleString('pt-BR'))}
               </p>
@@ -1115,7 +1115,8 @@ function renderEditorFotosAlbum(album) {
             <img src="${photo.thumbnail_src || photo.src}" alt="Thumb" style="width:100%; height:120px; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
             
             <!-- Descrição Opcional -->
-            <input type="text" class="form-input" style="font-size:0.7rem; padding:0.4rem 0.6rem; margin-top:0.6rem; min-height:28px;" placeholder="Descrição..." id="desc_${photo.id}" value="${escapeHtml(photo.description || '')}" onchange="window.salvarDescricaoFoto('${album.id}', '${photo.id}', this.value)">
+            <label style="font-size:0.65rem; color:var(--text-dim); margin-top:0.6rem; margin-bottom:0.2rem; display:block;">Descrição da foto</label>
+            <input type="text" class="form-input" style="font-size:0.7rem; padding:0.4rem 0.6rem; min-height:28px;" placeholder="Descrição..." id="desc_${photo.id}" value="${escapeHtml(photo.description || '')}" onchange="window.salvarDescricaoFoto('${album.id}', '${photo.id}', this.value)">
             
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.6rem;">
               <span style="font-size:0.65rem; color:var(--text-dim);">Ordem: <strong>${photo.sort_order}</strong></span>

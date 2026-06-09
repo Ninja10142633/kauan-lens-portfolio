@@ -7,10 +7,39 @@ export let activeAlbumId = null;
 let lightboxItems = [];
 let curIdx = 0;
 
+// Helper to check if a filename is a raw camera or device generated format
+export function isRawFilename(name) {
+  if (!name) return true;
+  const clean = name.trim();
+  return /^IMG_|^DSC|^PXL_|^WhatsApp|^WhatsApp\sImage|^\d{8}_\d{6}/i.test(clean);
+}
+
+// Computes the visitor-friendly description of a photo based on priority
+export function getPhotoDescription(photo, album) {
+  if (photo.description?.trim()) {
+    return photo.description.trim();
+  }
+  if (photo.title?.trim() && !isRawFilename(photo.title)) {
+    return photo.title.trim();
+  }
+  if (album?.title?.trim()) {
+    return album.title.trim();
+  }
+  return "Registro realizado por Kauan Lens.";
+}
+
 // Funções Auxiliares para o Sistema de Favoritos (Persistidos localmente)
 export function getFavorites() {
   try {
-    return JSON.parse(localStorage.getItem('kauanLensFavorites') || '[]');
+    const list = JSON.parse(localStorage.getItem('kauanLensFavorites') || '[]');
+    return list.map(photo => {
+      const isRaw = isRawFilename(photo.name);
+      return {
+        ...photo,
+        file_name: photo.name,
+        title: isRaw ? undefined : photo.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ")
+      };
+    });
   } catch (err) {
     return [];
   }
@@ -134,7 +163,14 @@ export async function carregarAlbums(sharedSlug = null) {
 
       // Filtra fotos soft-deletadas e ordena fotos relacionais por sort_order
       albums = dbAlbums.map(album => {
-        const activePhotos = (album.photos || []).filter(p => !p.deleted_at);
+        const activePhotos = (album.photos || []).filter(p => !p.deleted_at).map(p => {
+          const isRaw = isRawFilename(p.name);
+          return {
+            ...p,
+            file_name: p.name,
+            title: isRaw ? undefined : p.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ")
+          };
+        });
         const sortedPhotos = activePhotos.sort((a, b) => a.sort_order - b.sort_order);
         return { ...album, photos: sortedPhotos };
       });
@@ -207,9 +243,13 @@ export function atualizarDestaqueHero() {
     heroImageDiv.style.display = 'block';
 
     // Opcional: atualizar metadados técnicos do Hero com base na foto de destaque se houver
-    if (featuredPhoto.name && heroMetaCam) {
+    if (heroMetaCam) {
       const details = [];
-      if (featuredPhoto.name) details.push(featuredPhoto.name);
+      const album = albums.find(a => a.photos.some(p => p.id === featuredPhoto.id));
+      const cleanDesc = getPhotoDescription(featuredPhoto, album);
+      if (cleanDesc && cleanDesc !== "Registro realizado por Kauan Lens." && (!album || cleanDesc !== album.title)) {
+        details.push(cleanDesc);
+      }
       details.push('f/1.8 · 1/250s · ISO 200');
       details.push('LEM, BA · Cerrado');
       heroMetaCam.innerHTML = details.join('<br>');
@@ -341,17 +381,21 @@ export function renderAlbums() {
     </div>
     ${album.photos.length ? `
       <div class="photo-grid">
-        ${album.photos.map((photo, index) => `
-          <div class="photo-item" onclick="window.openAlbumLightbox('${album.id}', ${index})" role="button" aria-label="Visualizar foto ${escapeHtml(photo.name || album.title)} em tela cheia">
-            <img src="${photo.src}" alt="${escapeHtml(photo.name || album.title)}" loading="lazy" style="aspect-ratio: ${photo.w && photo.h ? `${photo.w} / ${photo.h}` : 'auto'}; height: auto;">
-            <div class="photo-overlay">
-              <div class="photo-meta">
-                <strong>${escapeHtml(photo.name || album.title)}</strong>
-                ${escapeHtml(album.title)}
+        ${album.photos.map((photo, index) => {
+          const cleanDesc = getPhotoDescription(photo, album);
+          const strongTitle = (photo.title && !isRawFilename(photo.title)) ? photo.title : album.title;
+          return `
+            <div class="photo-item" onclick="window.openAlbumLightbox('${album.id}', ${index})" role="button" aria-label="Visualizar foto ${escapeHtml(cleanDesc)} em tela cheia">
+              <img src="${photo.src}" alt="${escapeHtml(cleanDesc)}" loading="lazy" style="aspect-ratio: ${photo.w && photo.h ? `${photo.w} / ${photo.h}` : 'auto'}; height: auto;">
+              <div class="photo-overlay">
+                <div class="photo-meta">
+                  <strong>${escapeHtml(strongTitle)}</strong>
+                  ${escapeHtml(album.title)}
+                </div>
               </div>
             </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     ` : `
       <div class="album-empty">
@@ -398,8 +442,16 @@ export async function loadSharedAlbum(slug) {
 
       if (dbAlbums && dbAlbums.length) {
         const album = dbAlbums[0];
+        const activePhotos = (album.photos || []).filter(p => !p.deleted_at).map(p => {
+          const isRaw = isRawFilename(p.name);
+          return {
+            ...p,
+            file_name: p.name,
+            title: isRaw ? undefined : p.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ")
+          };
+        });
         // Ordena fotos por sort_order
-        album.photos = (album.photos || []).sort((a, b) => a.sort_order - b.sort_order);
+        album.photos = activePhotos.sort((a, b) => a.sort_order - b.sort_order);
 
         // Substitui a lista de álbuns pelo álbum compartilhado
         albums = [album];
@@ -454,6 +506,7 @@ export function openAlbumLightbox(albumId, index) {
     ...photo,
     albumId: album.id,
     albumTitle: album.title,
+    albumObj: album,
     meta: `${album.title} · ${formatDate(album.date)} · ${album.local || 'LEM, Bahia'}`
   }));
 
@@ -471,11 +524,15 @@ function renderLightboxItem() {
   const item = lightboxItems[curIdx];
   if (!item) return;
 
-  lbTitle.textContent = item.name || item.title || '';
+  const album = item.albumObj;
+  const cleanDesc = getPhotoDescription(item, album);
+  const strongTitle = (item.title && !isRawFilename(item.title)) ? item.title : (album?.title || '');
+
+  lbTitle.textContent = strongTitle;
   lbMeta.textContent = item.meta || `${item.albumTitle || ''}`;
 
   lbPlaceholder.className = 'lb-placeholder';
-  lbPlaceholder.innerHTML = `<img src="${item.original_src || item.src}" alt="${escapeHtml(item.name || item.title || '')}" id="lbActiveImage" style="opacity:0; transition: opacity 0.3s ease;">`;
+  lbPlaceholder.innerHTML = `<img src="${item.original_src || item.src}" alt="${escapeHtml(cleanDesc)}" id="lbActiveImage" style="opacity:0; transition: opacity 0.3s ease;">`;
   
   // Animar entrada da imagem
   const img = document.getElementById('lbActiveImage');
@@ -490,8 +547,8 @@ function renderLightboxItem() {
 
   // Mostrar descrição
   if (lbDesc) {
-    lbDesc.textContent = item.description || '';
-    lbDesc.style.display = item.description ? 'block' : 'none';
+    lbDesc.textContent = cleanDesc;
+    lbDesc.style.display = 'block';
   }
 }
 
