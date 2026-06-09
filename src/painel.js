@@ -94,16 +94,32 @@ function setupDashboardTabs() {
 }
 
 /**
+ * Verifica se um e-mail está na whitelist de administradores
+ */
+function isEmailAuthorized(email) {
+  if (!email) return false;
+  const cleanEmail = email.trim().toLowerCase();
+  const allowed = [
+    'kauan@exemplo.com',
+    'ninja12255tttyyjrh@gmail.com'
+  ];
+  const envEmail = import.meta.env.VITE_AUTHORIZED_EMAIL;
+  if (envEmail) {
+    allowed.push(envEmail.trim().toLowerCase());
+  }
+  return allowed.includes(cleanEmail);
+}
+
+/**
  * Atualiza a visibilidade do painel administrativo com base na sessão
  */
 async function atualizarInterfaceAdmin(session) {
   const isOwner = !!session;
   
   if (isOwner) {
-    const authorizedEmail = import.meta.env.VITE_AUTHORIZED_EMAIL || 'kauan@exemplo.com';
     const userEmail = session.user?.email;
     
-    if (userEmail !== authorizedEmail) {
+    if (!isEmailAuthorized(userEmail)) {
       try {
         await signOut();
       } catch (err) {
@@ -188,8 +204,7 @@ async function handleLogin() {
     return;
   }
 
-  const authorizedEmail = import.meta.env.VITE_AUTHORIZED_EMAIL || 'kauan@exemplo.com';
-  if (email !== authorizedEmail) {
+  if (!isEmailAuthorized(email)) {
     if (loginErrorMsg) {
       loginErrorMsg.textContent = 'Acesso Negado: E-mail não autorizado.';
       loginErrorMsg.style.display = 'block';
