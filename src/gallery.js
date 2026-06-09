@@ -30,7 +30,7 @@ export function isPhotoFavorited(photoSrc) {
 }
 
 // Elementos da DOM
-let albumTabs, albumView, lb, lbImgWrap, lbPlaceholder, lbTitle, lbMeta, lbFav;
+let albumTabs, albumView, lb, lbImgWrap, lbPlaceholder, lbTitle, lbMeta, lbFav, lbDesc;
 
 /**
  * Inicializa os observadores e referências da galeria
@@ -44,6 +44,7 @@ export function initGallery() {
   lbTitle = document.getElementById('lbTitle');
   lbMeta = document.getElementById('lbMeta');
   lbFav = document.getElementById('lbFav');
+  lbDesc = document.getElementById('lbDesc');
 
   // Registrar eventos do Lightbox
   document.getElementById('lbClose')?.addEventListener('click', closeLb);
@@ -131,9 +132,10 @@ export async function carregarAlbums(sharedSlug = null) {
       const { data: dbAlbums, error } = await query;
       if (error) throw error;
 
-      // Ordena fotos relacionais por sort_order
+      // Filtra fotos soft-deletadas e ordena fotos relacionais por sort_order
       albums = dbAlbums.map(album => {
-        const sortedPhotos = (album.photos || []).sort((a, b) => a.sort_order - b.sort_order);
+        const activePhotos = (album.photos || []).filter(p => !p.deleted_at);
+        const sortedPhotos = activePhotos.sort((a, b) => a.sort_order - b.sort_order);
         return { ...album, photos: sortedPhotos };
       });
 
@@ -485,6 +487,12 @@ function renderLightboxItem() {
   const isFav = isPhotoFavorited(item.src);
   lbFav.classList.toggle('active', isFav);
   lbFav.textContent = isFav ? '♥ Favoritado' : '♡ Favoritar';
+
+  // Mostrar descrição
+  if (lbDesc) {
+    lbDesc.textContent = item.description || '';
+    lbDesc.style.display = item.description ? 'block' : 'none';
+  }
 }
 
 /**

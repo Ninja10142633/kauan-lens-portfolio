@@ -64,6 +64,8 @@ create table if not exists public.photos (
   h integer,
   sort_order integer not null default 0,
   is_featured boolean not null default false,
+  description text,
+  slug text unique,
   deleted_at timestamptz,
   created_at timestamptz not null default now()
 );

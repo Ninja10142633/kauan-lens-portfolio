@@ -2,8 +2,8 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/admin",
-      "destination": "/admin.html"
+      "source": "/painel-klns-zy-26-x9",
+      "destination": "/painel-klns-zy-26-x9.html"
     },
     {
       "source": "/album/:slug",
