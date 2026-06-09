@@ -10,8 +10,23 @@ let curIdx = 0;
 // Helper to check if a filename is a raw camera or device generated format
 export function isRawFilename(name) {
   if (!name) return true;
+
   const clean = name.trim();
-  return /^IMG_|^DSC|^PXL_|^WhatsApp|^WhatsApp\sImage|^\d{8}_\d{6}/i.test(clean);
+
+  return (
+    /^IMG_/i.test(clean) ||
+    /^DSC/i.test(clean) ||
+    /^PXL_/i.test(clean) ||
+    /^WhatsApp/i.test(clean) ||
+    /^Screenshot/i.test(clean) ||
+    /^Captura de tela/i.test(clean) ||
+    /^Nova Imagem/i.test(clean) ||
+    /^Download/i.test(clean) ||
+    /^Foto[\s_-]*\(?\d+\)?/i.test(clean) ||
+    /^Imagem[\s_-]*\(?\d+\)?/i.test(clean) ||
+    /^Image[\s_-]*\(?\d+\)?/i.test(clean) ||
+    /^\d{8}_\d{6}/i.test(clean)
+  );
 }
 
 // Computes the visitor-friendly description of a photo based on priority
