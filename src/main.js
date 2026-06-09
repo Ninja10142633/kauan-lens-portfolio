@@ -1,6 +1,5 @@
 import './style.css';
 import { initGallery, carregarAlbums, loadSharedAlbum } from './gallery';
-import { initAdmin } from './admin';
 import { testSupabaseConnection } from './supabase';
 
 /**
@@ -99,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializa Módulos
   initNavigation();
   initGallery();
-  initAdmin();
 
   // Executa Roteamento e Rede
   router();

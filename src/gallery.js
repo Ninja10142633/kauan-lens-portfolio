@@ -7,6 +7,28 @@ export let activeAlbumId = null;
 let lightboxItems = [];
 let curIdx = 0;
 
+// Funções Auxiliares para o Sistema de Favoritos (Persistidos localmente)
+export function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem('kauanLensFavorites') || '[]');
+  } catch (err) {
+    return [];
+  }
+}
+
+export function saveFavorites(favorites) {
+  try {
+    localStorage.setItem('kauanLensFavorites', JSON.stringify(favorites));
+  } catch (err) {
+    console.error('Erro ao salvar favoritos:', err);
+  }
+}
+
+export function isPhotoFavorited(photoSrc) {
+  const favorites = getFavorites();
+  return favorites.some(p => p.src === photoSrc);
+}
+
 // Elementos da DOM
 let albumTabs, albumView, lb, lbImgWrap, lbPlaceholder, lbTitle, lbMeta, lbFav;
 
@@ -204,7 +226,16 @@ export function atualizarDestaqueHero() {
 export function renderAlbums() {
   if (!albumTabs || !albumView) return;
 
-  if (!albums.length) {
+  const favorites = getFavorites();
+  const hasFavs = favorites.length > 0;
+
+  // Se o álbum ativo era o virtual e não há mais favoritos, volta pro primeiro
+  if (activeAlbumId === 'favorites-virtual-album' && !hasFavs) {
+    activeAlbumId = albums[0]?.id || null;
+  }
+
+  // Se não houver álbuns normais E não houver favoritos
+  if (!albums.length && !hasFavs) {
     albumTabs.innerHTML = '';
     albumView.innerHTML = `
       <div class="album-empty">
@@ -219,13 +250,14 @@ export function renderAlbums() {
   }
 
   // Define álbum ativo inicial se necessário
-  if (!activeAlbumId || !albums.some(album => album.id === activeAlbumId)) {
-    activeAlbumId = albums[0].id;
+  if (!activeAlbumId || 
+      (activeAlbumId !== 'favorites-virtual-album' && !albums.some(album => album.id === activeAlbumId)) ||
+      (activeAlbumId === 'favorites-virtual-album' && !hasFavs)) {
+    activeAlbumId = albums[0]?.id || null;
   }
 
   // Renderizar abas dos álbuns
-  albumTabs.innerHTML = albums.map(album => {
-    // A capa pode ser cover_url, ou a primeira foto do álbum, ou um gradiente preto
+  let tabsHtml = albums.map(album => {
     const cover = album.cover_url || (album.photos && album.photos[0] ? album.photos[0].thumbnail_src || album.photos[0].src : '');
     const style = cover ? `style="background-image:url('${cover.replace(/'/g, '%27')}')"` : '';
     const isSelected = album.id === activeAlbumId;
@@ -244,11 +276,46 @@ export function renderAlbums() {
     `;
   }).join('');
 
-  // Renderizar álbum selecionado
-  const album = albums.find(item => item.id === activeAlbumId);
+  // Adiciona a aba dinâmica de favoritos se houver algum item favoritado
+  if (hasFavs) {
+    const isSelected = activeAlbumId === 'favorites-virtual-album';
+    const cover = favorites[0]?.thumbnail_src || favorites[0]?.src || '';
+    const style = cover ? `style="background-image:url('${cover.replace(/'/g, '%27')}')"` : '';
+    const classes = `album-card virtual-album ${cover ? 'has-cover' : ''} ${isSelected ? 'on' : ''}`;
+
+    tabsHtml += `
+      <button class="${classes}" ${style} role="tab" aria-selected="${isSelected ? 'true' : 'false'}" onclick="window.selectAlbum('favorites-virtual-album')">
+        <span class="album-card-content">
+          <span class="album-count" style="color: #ff5555;">♥ ${favorites.length} foto${favorites.length === 1 ? '' : 's'}</span>
+          <span>
+            <span class="album-title" style="color: var(--gold);">Minhas Favoritas</span>
+            <span class="album-meta">Sua seleção de fotos</span>
+          </span>
+        </span>
+      </button>
+    `;
+  }
+
+  albumTabs.innerHTML = tabsHtml;
+
+  // Obter o álbum a ser renderizado
+  let album;
+  if (activeAlbumId === 'favorites-virtual-album' && hasFavs) {
+    album = {
+      id: 'favorites-virtual-album',
+      title: 'Minhas Favoritas',
+      date: new Date().toISOString().split('T')[0],
+      local: 'Galeria Pessoal',
+      cat: 'favoritos',
+      note: 'Suas fotos marcadas com coração.',
+      photos: favorites
+    };
+  } else {
+    album = albums.find(item => item.id === activeAlbumId);
+  }
+
   if (!album) return;
 
-  // Link de compartilhamento do álbum
   const albumUrl = `${window.location.origin}/album/${album.slug}`;
 
   albumView.innerHTML = `
@@ -256,15 +323,17 @@ export function renderAlbums() {
       <div class="album-view-title-wrap">
         <h3 class="album-view-title">${escapeHtml(album.title)}</h3>
         <p class="album-view-meta">
-          ${escapeHtml(formatDate(album.date))} · ${escapeHtml(album.local || 'LEM, Bahia')} · ${escapeHtml(album.cat || 'registro')}
+          ${activeAlbumId === 'favorites-virtual-album' ? 'Sua Coleção Privada' : `${escapeHtml(formatDate(album.date))} · ${escapeHtml(album.local || 'LEM, Bahia')} · ${escapeHtml(album.cat || 'registro')}`}
         </p>
       </div>
       <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
-        <button class="mini-btn" onclick="navigator.clipboard.writeText('${albumUrl}').then(() => alert('Link copiado!'))" style="min-height:36px;">
-          Compartilhar Álbum
-        </button>
+        ${activeAlbumId !== 'favorites-virtual-album' ? `
+          <button class="mini-btn" onclick="navigator.clipboard.writeText('${albumUrl}').then(() => alert('Link copiado!'))" style="min-height:36px;">
+            Compartilhar Álbum
+          </button>
+        ` : ''}
         <p class="album-note" style="margin-top:0.5rem; text-align:right;">
-          ${escapeHtml(album.note || 'Coleção de registros fotográficos organizados pelo autor.')}
+          ${escapeHtml(album.note || '')}
         </p>
       </div>
     </div>
@@ -366,12 +435,23 @@ export async function loadSharedAlbum(slug) {
  * Abre o visualizador Lightbox em tela cheia
  */
 export function openAlbumLightbox(albumId, index) {
-  const album = albums.find(item => item.id === albumId);
+  let album;
+  if (albumId === 'favorites-virtual-album') {
+    album = {
+      id: 'favorites-virtual-album',
+      title: 'Minhas Favoritas',
+      photos: getFavorites()
+    };
+  } else {
+    album = albums.find(item => item.id === albumId);
+  }
+
   if (!album || !album.photos.length) return;
 
   lightboxItems = album.photos.map(photo => ({
-    src: photo.original_src || photo.src, // Usa a versão original se disponível
-    title: photo.name || album.title,
+    ...photo,
+    albumId: album.id,
+    albumTitle: album.title,
     meta: `${album.title} · ${formatDate(album.date)} · ${album.local || 'LEM, Bahia'}`
   }));
 
@@ -389,11 +469,11 @@ function renderLightboxItem() {
   const item = lightboxItems[curIdx];
   if (!item) return;
 
-  lbTitle.textContent = item.title;
-  lbMeta.textContent = item.meta;
+  lbTitle.textContent = item.name || item.title || '';
+  lbMeta.textContent = item.meta || `${item.albumTitle || ''}`;
 
   lbPlaceholder.className = 'lb-placeholder';
-  lbPlaceholder.innerHTML = `<img src="${item.src}" alt="${escapeHtml(item.title)}" id="lbActiveImage" style="opacity:0; transition: opacity 0.3s ease;">`;
+  lbPlaceholder.innerHTML = `<img src="${item.original_src || item.src}" alt="${escapeHtml(item.name || item.title || '')}" id="lbActiveImage" style="opacity:0; transition: opacity 0.3s ease;">`;
   
   // Animar entrada da imagem
   const img = document.getElementById('lbActiveImage');
@@ -401,9 +481,10 @@ function renderLightboxItem() {
     setTimeout(() => { img.style.opacity = 1; }, 50);
   }
 
-  // Favoritar visual
-  lbFav.classList.remove('active');
-  lbFav.textContent = '♡ Favoritar';
+  // Atualizar visual do botão favorito
+  const isFav = isPhotoFavorited(item.src);
+  lbFav.classList.toggle('active', isFav);
+  lbFav.textContent = isFav ? '♥ Favoritado' : '♡ Favoritar';
 }
 
 /**
@@ -412,6 +493,8 @@ function renderLightboxItem() {
 export function closeLb() {
   lb.classList.remove('open');
   document.body.style.overflow = '';
+  // Recarrega os álbuns para refletir favoritos adicionados ou removidos
+  renderAlbums();
 }
 
 /**
@@ -432,9 +515,44 @@ export function navLb(dir) {
 }
 
 /**
- * Alterna favorito visual
+ * Alterna favorito persistido
  */
 export function toggleFav(btn) {
-  const active = btn.classList.toggle('active');
-  btn.textContent = active ? '♥ Favoritado' : '♡ Favoritar';
+  const item = lightboxItems[curIdx];
+  if (!item) return;
+
+  const favorites = getFavorites();
+  const index = favorites.findIndex(p => p.src === item.src);
+  
+  let isFavNow = false;
+  if (index > -1) {
+    // Remove do localStorage
+    favorites.splice(index, 1);
+  } else {
+    // Adiciona ao localStorage
+    const photoToSave = {
+      id: item.id || crypto.randomUUID(),
+      src: item.src,
+      thumbnail_src: item.thumbnail_src || item.src,
+      original_src: item.original_src || item.src,
+      name: item.name || item.title || '',
+      w: item.w || null,
+      h: item.h || null,
+      album_id: item.albumId || item.album_id || null,
+      sort_order: item.sort_order || 0
+    };
+    favorites.push(photoToSave);
+    isFavNow = true;
+  }
+
+  saveFavorites(favorites);
+
+  // Atualizar UI do botão
+  btn.classList.toggle('active', isFavNow);
+  btn.textContent = isFavNow ? '♥ Favoritado' : '♡ Favoritar';
+
+  // Se o álbum atual for o virtual de favoritos, atualiza a galeria em background
+  if (activeAlbumId === 'favorites-virtual-album') {
+    renderAlbums();
+  }
 }

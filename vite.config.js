@@ -5,6 +5,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: './index.html',
+        admin: './admin.html',
         notFound: './404.html',
         offline: './offline.html'
       }

@@ -8,7 +8,7 @@ let isEditing = false;
 let currentEditingAlbumId = null;
 
 // Elementos da DOM
-let ownerLocked, ownerTools, successMsg;
+let ownerLocked, ownerTools, successMsg, loginErrorMsg;
 let evTitle, evCat, evDate, evLocal, evNota, evStatus, evFeatured, albumFiles, pendingList;
 let uploadQueueContainer, uploadQueueList, saveAlbumBtn;
 let metricAlbums, metricPhotos, metricTrash;
@@ -20,6 +20,7 @@ export async function initAdmin() {
   ownerLocked = document.getElementById('ownerLocked');
   ownerTools = document.getElementById('ownerTools');
   successMsg = document.getElementById('successMsg');
+  loginErrorMsg = document.getElementById('loginErrorMsg');
   
   evTitle = document.getElementById('evTitle');
   evCat = document.getElementById('evCat');
@@ -92,11 +93,38 @@ function setupDashboardTabs() {
 /**
  * Atualiza a visibilidade do painel administrativo com base na sessão
  */
-function atualizarInterfaceAdmin(session) {
+async function atualizarInterfaceAdmin(session) {
   const isOwner = !!session;
   
-  // Exibe painel apropriado
   if (isOwner) {
+    const authorizedEmail = import.meta.env.VITE_AUTHORIZED_EMAIL || 'kauan@exemplo.com';
+    const userEmail = session.user?.email;
+    
+    if (userEmail !== authorizedEmail) {
+      try {
+        await signOut();
+      } catch (err) {
+        console.error('Erro ao fazer signout de usuario nao autorizado:', err);
+      }
+      
+      if (loginErrorMsg) {
+        loginErrorMsg.textContent = 'Acesso Negado: E-mail não autorizado.';
+        loginErrorMsg.style.display = 'block';
+      }
+      
+      ownerLocked?.classList.remove('hidden');
+      ownerTools?.classList.add('hidden');
+      
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.classList.remove('visible');
+      });
+      return;
+    }
+
+    if (loginErrorMsg) {
+      loginErrorMsg.style.display = 'none';
+      loginErrorMsg.textContent = '';
+    }
     ownerLocked?.classList.add('hidden');
     ownerTools?.classList.remove('hidden');
     carregarMetricas();
@@ -135,15 +163,34 @@ async function handleLogin() {
     return;
   }
 
+  const authorizedEmail = import.meta.env.VITE_AUTHORIZED_EMAIL || 'kauan@exemplo.com';
+  if (email !== authorizedEmail) {
+    if (loginErrorMsg) {
+      loginErrorMsg.textContent = 'Acesso Negado: E-mail não autorizado.';
+      loginErrorMsg.style.display = 'block';
+    }
+    return;
+  }
+
+  if (loginErrorMsg) {
+    loginErrorMsg.style.display = 'none';
+    loginErrorMsg.textContent = '';
+  }
+
   try {
     const data = await signIn(email, password);
-    alert('Acesso autorizado com sucesso!');
     registrarLog('login', `Email: ${email}`);
-    atualizarInterfaceAdmin(data.session);
+    await atualizarInterfaceAdmin(data.session);
+    alert('Acesso autorizado com sucesso!');
     carregarAlbums(); // recarregar galeria no modo admin
   } catch (err) {
     console.error(err);
-    alert('Erro de login: ' + err.message);
+    if (loginErrorMsg) {
+      loginErrorMsg.textContent = 'Erro de login: ' + err.message;
+      loginErrorMsg.style.display = 'block';
+    } else {
+      alert('Erro de login: ' + err.message);
+    }
   }
 }
 
@@ -155,7 +202,7 @@ async function handleLogout() {
     await registrarLog('logout');
     await signOut();
     alert('Sessão encerrada.');
-    atualizarInterfaceAdmin(null);
+    await atualizarInterfaceAdmin(null);
     carregarAlbums(); // recarregar galeria normal
   } catch (err) {
     console.error(err);

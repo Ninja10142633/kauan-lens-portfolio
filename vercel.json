@@ -2,6 +2,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
       "source": "/album/:slug",
       "destination": "/index.html"
     },
